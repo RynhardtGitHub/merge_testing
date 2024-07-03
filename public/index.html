@@ -150,8 +150,6 @@
 
                     const restartButton = document.getElementById('restartButton');
                     restartButton.style.display = 'block';
-
-                    socket.emit('resetServer');
                 }
 
                 console.log(`Data received: ${JSON.stringify(data)}`);
@@ -333,6 +331,12 @@
 
             document.getElementById('btnPermission').addEventListener('click', () => {
                 requestDeviceOrientation();          
+            });
+
+            
+
+            document.getElementById('restartButton').addEventListener('click', () => {
+                socket.emit('resetServer');   
             });
         });
 

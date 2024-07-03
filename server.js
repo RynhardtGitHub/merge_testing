@@ -20,7 +20,6 @@ let EndX;
 let EndY;
 let vector2D;
 let level = 1;
-let lives = 5;
 let traps = [];
 let time = 90000;
 let speed = 1;
@@ -98,10 +97,6 @@ server.listen(port, () => {
 
 
 function startGame() {
-
-    if (lives < 1) {
-        resetServer();
-    }
 
     console.log(`Starting new game: ${gridSize}`);
 
@@ -302,7 +297,6 @@ function update() {
 
 function resetServer() {
     gridSize = 5;
-    lives = 5;
     level = 1;
     time = 90000;
     startGame();
