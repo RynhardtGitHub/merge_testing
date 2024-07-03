@@ -84,6 +84,8 @@
             const canvasContainer = document.getElementById('canvasContainer');
             const ctx = canvas.getContext('2d');
             const size = Math.min(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
+            const heartsContainer = document.getElementById('hearts');
+            
             canvas.width = size;
             canvas.height = size;
 
@@ -149,6 +151,30 @@
                 console.log(`Data received: ${JSON.stringify(data)}`);
             });
 
+            // socket.on('remove_heart', (lives) => {
+            //     while (hearts.length > 0) {
+            //         hearts[hearts.length - 1].remove();
+            //     }
+            //     const heartsContainer = document.getElementById('hearts');
+            //     heartsContainer.innerHTML = '';
+            //     for (let i = 0; i < lives; i++) {
+            //         const heart = document.createElement('img');
+            //         heart.src = 'heart.png';
+            //         heart.alt = 'Heart';
+            //         heart.width = 30;
+            //         heart.height = 30;
+            //         heartsContainer.appendChild(heart);
+            //     }
+            //     hearts = heartsContainer.getElementsByTagName('img');
+            // });
+
+            const hearts = Array.from(heartsContainer.getElementsByTagName('img')); // Convert to array
+            socket.on('remove_heart', (lives) => {
+                hearts.forEach((heart, index) => {
+                    heart.style.display = index < lives ? 'inline' : 'none'; // Show/hide based on lives
+                });
+            });
+
             function drawMaze() {
 
                 for (let i = 0; i < vector2D.length; i++) {
@@ -182,19 +208,33 @@
                     drawBall(xPos, yPos, 'yellow'); // Replace 'red' with your desired color
                 }
             }
-
             
             function handleOrientation(event) {
                 let betta = event.beta;
                 let gamma = event.gamma;
                 //give betta and gamma
+
+                data = {beta:betta, gamma:gamma};
+
+                console.log(`Sending beta-gamma data: ${JSON.stringify(data)}`);
+
+                socket.emit('beta_gamma', data);
             }
 
-            function Update(){//when reqeusted
-                tx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
-                //get x and y
-                drawBall(x, y, '#c80000');
-            }
+            // function Update(){//when reqeusted
+            //     tx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
+            //     //get x and y
+            //     drawBall(x, y, '#c80000');
+            // }
+
+            socket.on('pos_update', (data) => {
+                console.log(`x,y: ${data.x}, ${data.y}`);
+
+                ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
+                x = data.x;
+                y = data.y;
+                drawBall(data.x, data.y, '#c80000');
+            });
     
             async function requestDeviceOrientation() {
                 if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -218,7 +258,7 @@
 
             function resetHearts() {
                 let lives = 5;
-                const heartsContainer = document.getElementById('hearts');
+                // const heartsContainer = document.getElementById('hearts');
                 heartsContainer.innerHTML = '';
                 for (let i = 0; i < 5; i++) {
                     const heart = document.createElement('img');
@@ -231,11 +271,12 @@
                 hearts = heartsContainer.getElementsByTagName('img');
             }
 
-            function removeHeart() {
-                if (hearts.length > 0) {
-                    hearts[hearts.length - 1].remove();
-                }
-            }
+            // function removeHeart() {
+            //     if (hearts.length > 0) {
+            //         hearts[hearts.length - 1].remove();
+            //     }
+            // }
+
 
             document.getElementById('restartButton').addEventListener('click', () => {
                 requestDeviceOrientation();          

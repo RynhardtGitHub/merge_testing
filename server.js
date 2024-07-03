@@ -9,7 +9,7 @@ const io = socketIo(server);
 const cors = require('cors');
 app.use(cors());
 
-let gridSize;
+let gridSize = 5;
 let dx;
 let dy;
 let betta;
@@ -24,16 +24,26 @@ let lives = 5;
 let traps = [];
 let hearts;
 
-startGame(5);
+// Beta-gamma accumulator
+const globalDataAccumulator = [];
+let MAX_DATA_POINTS = 1;
+
+// Player count
+let playerCount = 0;
+
+startGame();
 setInterval(update, 150);
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'game.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'game.html'));
+// });
 
 // Sockets
 io.on('connection', (socket) => {
+    playerCount += 1;
+    MAX_DATA_POINTS = playerCount;
+
     data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps};
     io.emit('getInitialData', data);
 
@@ -41,29 +51,61 @@ io.on('connection', (socket) => {
 
     console.log('User connected');
 
+    socket.on('beta_gamma', (data) => {
+        globalDataAccumulator.push(data);
+        if (globalDataAccumulator.length > MAX_DATA_POINTS) {
+            globalDataAccumulator.shift(); // Remove oldest data
+        }
+    
+        // console.log(`Beta, gamma: ${JSON.stringify(data)}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected.')
+        playerCount -= 1;
+
+        if (playerCount <= 0) {
+            playerCount = 0;
+            resetServer();
+        }
+
+        MAX_DATA_POINTS = playerCount * 3;
+    })
     
 });
 
-// Run serverS
+// Run servers
 const port = 8080;
 server.listen(port, () => {
     console.log(`listening on : ${port}`);
 });
 
 
-function startGame(difficulty) {
+function startGame() {
+
+    if (lives < 1) {
+        resetServer();
+    }
+
+    console.log(`Starting new game: ${gridSize}`);
+
     // Tell game to start new game
-    getInitialData(difficulty);
+    getInitialData();
     generateMaze();
     // Give vector and gridsize to draw maze        
     // give x,y to draw ball
     // give endx and endy to draw hole
-    // getTraps();
+    traps = [];
+    getTraps();
     // get trap vector to draw trap
+
+    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps};
+    io.emit('getInitialData', data);
+
+    io.emit('start');
 }
 
-function getInitialData(difficulty) {
-    gridSize = difficulty;
+function getInitialData() {
     dx = 0;
     dy = 0;
     betta = 0;
@@ -140,6 +182,21 @@ function shuffleDirections() {
     return directions;
 }
 
+function getTraps(){
+    for (let i = 1; i < vector2D.length - 1; i++) {
+        for (let j = 1; j < vector2D[i].length - 1; j++) {
+            var tel = 0;
+            if (vector2D[i+1][j] === 1) tel++;
+            if (vector2D[i-1][j] === 1) tel++;
+            if (vector2D[i][j+1] === 1) tel++;
+            if (vector2D[i][j-1] === 1) tel++;
+
+            if (tel === 3 && !(EndX === j && EndY === i) && vector2D[i][j] === 0 && Math.random() < 0.25)
+                traps.push([j,i]);
+        }
+    }
+}
+
 function update() {
     if (lives === 0){
         return;
@@ -147,8 +204,22 @@ function update() {
 
     //ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
 
-    dx += Math.sin(gamma / 180 * Math.PI);
-    dy += Math.sin(betta / 180 * Math.PI);
+    const averageData = globalDataAccumulator.reduce((acc, curr) => {
+        acc.beta += curr.beta;
+        acc.gamma += curr.gamma;
+        return acc;
+    }, { beta: 0, gamma: 0});
+    averageData.beta /= globalDataAccumulator.length;
+    averageData.gamma /= globalDataAccumulator.length;
+    betta = averageData.beta;
+    gamma = averageData.gamma;
+
+    console.log(`Average values: ${betta}, ${gamma}`);
+
+    dx += Math.sin((gamma || 0) / 180 * Math.PI); // Use 0 if gamma is undefined
+    dy += Math.sin((betta || 0) / 180 * Math.PI);
+
+    console.log(`dx, dy: ${dx}, ${dy}`);
 
     while (dx >= 0.1) {
         dx -= 0.1;
@@ -185,29 +256,42 @@ function update() {
         return Number(num.toFixed(9)) === Number(num.toFixed(0));
     }
 
-    //give x, y to draw
+    data = {x:x, y:y};
+    io.emit('pos_update', data);
 
     if (Number(x.toFixed(9)) === EndX && Number(y.toFixed(9)) === EndY) {
         let temp = level + 1;
         //alert('Start level ' + temp);
-        sleep(1000);
+        console.log(`Starting game again.`);
+
+        // sleep(1000);
         level++;
-        startGame(gridSize + 4);
+        gridSize += 4;
+        startGame();
     }
 
     for (let trap of traps) {
         const [trapX, trapY] = trap;
         if (trapX === Number(x.toFixed(9)) && trapY === Number(y.toFixed(9))) {
             //alert('Down to ' + lives + ' lives');
-            sleep(1000);
-            //tell te remove heart
+            // sleep(1000);
+
             lives--;
+
+            // Remove heart
+            io.emit('remove_heart', (lives));
+
+            console.log(`Lives left: ${lives}`);
+
             startGame(gridSize);
             break; // Exit the loop once we find the trap
         }
     }
 }
 
-//event that get all orientations and avarge
-//betta = avarage betta
-//gamma = avarge gamma
+function resetServer() {
+    gridSize = 5;
+    lives = 5;
+    level = 1;
+    startGame();
+}
