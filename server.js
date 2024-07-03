@@ -30,6 +30,7 @@ let MAX_DATA_POINTS = 1;
 
 // Player count
 let playerCount = 0;
+const players = {};
 
 startGame();
 setInterval(update, 150);
@@ -49,7 +50,9 @@ io.on('connection', (socket) => {
 
     io.emit('start');
 
-    console.log('User connected');
+    console.log(`${socket.id} connected.`);
+
+    players[socket.id] = {id:socket.id};
 
     socket.on('beta_gamma', (data) => {
         globalDataAccumulator.push(data);
@@ -61,8 +64,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected.')
+        console.log(`${socket.id} disconnected.`)
         playerCount -= 1;
+
+        delete players[socket.id];
 
         if (playerCount <= 0) {
             playerCount = 0;
