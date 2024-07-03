@@ -22,7 +22,11 @@ let vector2D;
 let level = 1;
 let lives = 5;
 let traps = [];
-let hearts;
+let time = 90000;
+let speed = 1;
+let speedCounter = 0;
+
+const tickSpeed = 150;
 
 // Beta-gamma accumulator
 const globalDataAccumulator = [];
@@ -203,9 +207,19 @@ function getTraps(){
 }
 
 function update() {
-    if (lives === 0){
+    time-=tickSpeed;
+    speedCounter-=tickSpeed;
+    if (time < 0){
+        if (singleMessage)
+            alert('You reached level ' + level);
+        singleMessage = false;
         return;
-    }  
+    }
+    if (speedCounter<0){
+        speed = 1;
+    }
+
+    console.log('Time: ' + timeleft + '\tLevel: ' + level);
 
     //ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
 
@@ -221,8 +235,8 @@ function update() {
 
     // console.log(`Average values: ${betta}, ${gamma}`);
 
-    dx += Math.sin((gamma || 0) / 180 * Math.PI); // Use 0 if gamma is undefined
-    dy += Math.sin((betta || 0) / 180 * Math.PI);
+    dx += speed*Math.sin((gamma || 0) / 180 * Math.PI); // Use 0 if gamma is undefined
+    dy += speed*Math.sin((betta || 0) / 180 * Math.PI);
 
     // console.log(`dx, dy: ${dx}, ${dy}`);
 
@@ -261,12 +275,10 @@ function update() {
         return Number(num.toFixed(9)) === Number(num.toFixed(0));
     }
 
-    data = {x:x, y:y};
+    data = {x:x, y:y, time:time};
     io.emit('pos_update', data);
 
     if (Number(x.toFixed(9)) === EndX && Number(y.toFixed(9)) === EndY) {
-        let temp = level + 1;
-        //alert('Start level ' + temp);
         console.log(`Starting game again.`);
 
         // sleep(1000);
@@ -278,18 +290,8 @@ function update() {
     for (let trap of traps) {
         const [trapX, trapY] = trap;
         if (trapX === Number(x.toFixed(9)) && trapY === Number(y.toFixed(9))) {
-            //alert('Down to ' + lives + ' lives');
-            // sleep(1000);
-
-            lives--;
-
-            // Remove heart
-            io.emit('remove_heart', (lives));
-
-            console.log(`Lives left: ${lives}`);
-
-            startGame(gridSize);
-            break; // Exit the loop once we find the trap
+            speed = 0.2;
+            speedCounter = 5000;
         }
     }
 }
