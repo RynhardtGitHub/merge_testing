@@ -24,6 +24,7 @@ let traps = [];
 let time = 90000;
 let speed = 1;
 let speedCounter = 0;
+let start = false;
 
 const tickSpeed = 150;
 
@@ -47,10 +48,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
     playerCount += 1;
 
-    const currentPlayerCount = Object.keys(players).length + 1;
+    // const currentPlayerCount = Object.keys(players).length + 1;
 
     let maxPlayerCount = 5;
-    if (currentPlayerCount > maxPlayerCount) {
+    if (playerCount > maxPlayerCount) {
         console.log(`Maximum player count reached (${maxPlayerCount}). Disconnecting user: ${socket.id}`);
         socket.disconnect(true);
         playerCount -= 1;
@@ -98,6 +99,10 @@ io.on('connection', (socket) => {
     
         console.log('Server reset!');
     });
+
+    socket.on('startButton', () => {
+        start = !start;
+    })
 });
 
 // Run servers
@@ -220,6 +225,8 @@ function getTraps(){
 }
 
 function update() {
+    if (!start) return;
+
     time-=tickSpeed;
     speedCounter-=tickSpeed;
     if (time < 0){

@@ -69,6 +69,7 @@
         <div class="buttons">
             <button id="restartButton" style="display: none;">Restart</button>
             <button id="btnPermission">Allow permission</button>
+            <button id="startButton" style="display: none;">Start</button>
         </div>
     </footer>
 
@@ -150,6 +151,9 @@
 
                     const restartButton = document.getElementById('restartButton');
                     restartButton.style.display = 'block';
+
+                    const startButton = document.getElementById('startButton');
+                    startButton.style.display = 'block';
                 }
 
                 console.log(`Data received: ${JSON.stringify(data)}`);
@@ -335,6 +339,10 @@
 
             document.getElementById('restartButton').addEventListener('click', () => {
                 socket.emit('resetServer');
+            });
+
+            document.getElementById('startButton').addEventListener('click', () => {
+                socket.emit('startServer');
             });
         });
 
