@@ -58,21 +58,19 @@
 </head>
 <body>
     <header>
-        <div id="hearts">
-            <img src="heart.png" alt="Heart" width="30" height="30">
-            <img src="heart.png" alt="Heart" width="30" height="30">
-            <img src="heart.png" alt="Heart" width="30" height="30">
-            <img src="heart.png" alt="Heart" width="30" height="30">
-            <img src="heart.png" alt="Heart" width="30" height="30">
-        </div>
-        <div class="buttons">
-            <button id="restartButton">Allow permission</button>
+        <div id="editableTextContainer">
+            <h1 id="editableText">Editable Text</h1>
         </div>
     </header>
     <div id="canvasContainer">
         <canvas id="canvas"></canvas>
     </div>
-    <footer></footer>
+    <footer>
+        <div class="buttons">
+            <button id="restartButton">Restart</button>
+            <button id="btnPermission">Allow permission</button>
+        </div>
+    </footer>
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
