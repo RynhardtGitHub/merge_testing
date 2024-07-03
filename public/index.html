@@ -168,7 +168,7 @@
             //     hearts = heartsContainer.getElementsByTagName('img');
             // });
 
-            const hearts = Array.from(heartsContainer.getElementsByTagName('img')); // Convert to array
+            let hearts = Array.from(heartsContainer.getElementsByTagName('img')); // Convert to array
             socket.on('remove_heart', (lives) => {
                 hearts.forEach((heart, index) => {
                     heart.style.display = index < lives ? 'inline' : 'none'; // Show/hide based on lives
