@@ -46,6 +46,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Sockets
 io.on('connection', (socket) => {
     playerCount += 1;
+
+    const currentPlayerCount = Object.keys(players).length + 1;
+
+    let maxPlayerCount = 5;
+    if (currentPlayerCount > maxPlayerCount) {
+        console.log(`Maximum player count reached (${maxPlayerCount}). Disconnecting user: ${socket.id}`);
+        socket.disconnect(true);
+        playerCount -= 1;
+        return;
+    }
+
     MAX_DATA_POINTS = playerCount;
 
     let host = (playerCount == 1);
