@@ -102,6 +102,8 @@ io.on('connection', (socket) => {
 
     socket.on('startButton', () => {
         start = !start;
+
+        console.log(`Start: ${start}`)
     })
 });
 
