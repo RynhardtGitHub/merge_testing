@@ -145,8 +145,11 @@
                 traps = data.traps;
 
                 if (data.host) {
+
+                    console.log('This client is host.')
+
                     const restartButton = document.getElementById('restartButton');
-                    restartButton.style.display = 'visible';
+                    restartButton.style.display = 'block';
 
                     socket.emit('resetServer');
                 }
