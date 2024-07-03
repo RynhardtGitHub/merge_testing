@@ -295,7 +295,7 @@
                 console.log(`x,y: ${data.x}, ${data.y}`);
 
                 timeleft = Math.round(data.time/1000);
-                editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level;
+                editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level + ' - Link: mergetesting-production.up.railway.app';
 
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
                 x = data.x;
@@ -333,10 +333,8 @@
                 requestDeviceOrientation();          
             });
 
-            
-
             document.getElementById('restartButton').addEventListener('click', () => {
-                socket.emit('resetServer');   
+                socket.emit('resetServer');
             });
         });
 
