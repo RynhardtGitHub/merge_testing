@@ -168,7 +168,7 @@
             //     hearts = heartsContainer.getElementsByTagName('img');
             // });
 
-            const hearts = heartsContainer.getElementsByTagName('img');
+            let hearts = heartsContainer.getElementsByTagName('img');
 
             socket.on('remove_heart', (lives) => {
                 for (let i = 0; i < hearts.length; i++) {
