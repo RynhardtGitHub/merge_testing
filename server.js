@@ -219,12 +219,12 @@ function update() {
     betta = averageData.beta;
     gamma = averageData.gamma;
 
-    console.log(`Average values: ${betta}, ${gamma}`);
+    // console.log(`Average values: ${betta}, ${gamma}`);
 
     dx += Math.sin((gamma || 0) / 180 * Math.PI); // Use 0 if gamma is undefined
     dy += Math.sin((betta || 0) / 180 * Math.PI);
 
-    console.log(`dx, dy: ${dx}, ${dy}`);
+    // console.log(`dx, dy: ${dx}, ${dy}`);
 
     while (dx >= 0.1) {
         dx -= 0.1;
