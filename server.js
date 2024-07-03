@@ -219,7 +219,7 @@ function update() {
         speed = 1;
     }
 
-    console.log('Time: ' + timeleft + '\tLevel: ' + level);
+    console.log('Time: ' + time + '\tLevel: ' + level);
 
     //ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
 
