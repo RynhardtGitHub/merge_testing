@@ -168,6 +168,7 @@
             //     hearts = heartsContainer.getElementsByTagName('img');
             // });
 
+            let hearts = Array.from(heartsContainer.getElementsByTagName('img'));
             socket.on('remove_heart', (lives) => {
                 console.log(`Remaining lives: ${lives}`);
                 hearts.forEach((heart, index) => {
