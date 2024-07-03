@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
         return;
     }
 
-    MAX_DATA_POINTS = playerCount;
+    MAX_DATA_POINTS = playerCount * 3;
 
     let host = (playerCount == 1);
 

@@ -70,6 +70,8 @@
             <button id="restartButton" style="display: none;">Restart</button>
             <button id="btnPermission">Allow permission</button>
             <button id="startButton" style="display: none;">Start/Pause</button>
+            <button id="opposeButton">Opposition!</button>
+            <button id="defendButton">Defend!</button>
         </div>
     </footer>
 
@@ -95,6 +97,7 @@
             let blockSize;
             let vector2D;
             let traps = [];
+            let offense = true;
 
             // requestDeviceOrientation();
             // resetHearts();
@@ -154,6 +157,12 @@
 
                     const startButton = document.getElementById('startButton');
                     startButton.style.display = 'block';
+
+                    const opposeButton = document.getElementById('opposeButton');
+                    opposeButton.style.display = 'none';
+
+                    const defendButton = document.getElementById('defendButton');
+                    defendButton.style.display = 'none';
 
                     alert('Hello');
                 }
@@ -288,6 +297,10 @@
 
                 console.log(`Sending beta-gamma data: ${JSON.stringify(data)}`);
 
+                if (offense) {
+                    socket.emit('beta_gamma', data);
+                }
+
                 socket.emit('beta_gamma', data);
             }
 
@@ -306,6 +319,7 @@
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
                 x = data.x;
                 y = data.y;
+
                 drawBall(data.x, data.y, '#c80000');
             });
     
@@ -345,6 +359,14 @@
 
             document.getElementById('startButton').addEventListener('click', () => {
                 socket.emit('startButton');
+            });
+
+            document.getElementById('opposeButton').addEventListener('click', () => {
+                offense = true;
+            });
+
+            document.getElementById('opposeButton').addEventListener('click', () => {
+                offense = false;
             });
         });
 
