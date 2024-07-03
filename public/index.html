@@ -168,12 +168,12 @@
             //     hearts = heartsContainer.getElementsByTagName('img');
             // });
 
-            let hearts = Array.from(heartsContainer.getElementsByTagName('img'));
+            const hearts = heartsContainer.getElementsByTagName('img');
+
             socket.on('remove_heart', (lives) => {
-                console.log(`Remaining lives: ${lives}`);
-                hearts.forEach((heart, index) => {
-                    heart.style.display = index < lives ? 'inline' : 'none'; // Show/hide based on lives
-                });
+                for (let i = 0; i < hearts.length; i++) {
+                    hearts[i].style.display = i < lives ? 'inline' : 'none'; 
+                }
             });
 
             function drawMaze() {
