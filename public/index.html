@@ -172,7 +172,7 @@
 
             socket.on('remove_heart', (lives) => {
                 for (let i = 0; i < hearts.length; i++) {
-                    hearts[i].style.display = i < lives ? 'inline' : 'none'; 
+                    hearts[i].style.display = i < lives ? 'visible' : 'hidden'; 
                 }
             });
 
