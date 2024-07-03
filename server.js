@@ -82,12 +82,12 @@ io.on('connection', (socket) => {
 
         MAX_DATA_POINTS = playerCount * 3;
     })
-});
 
-io.on('resetServer', () => {
-    resetServer();
-
-    console.log('Server reset!');
+    socket.on('resetServer', () => {
+        resetServer();
+    
+        console.log('Server reset!');
+    });
 });
 
 // Run servers
@@ -279,7 +279,7 @@ function update() {
         return Number(num.toFixed(9)) === Number(num.toFixed(0));
     }
 
-    data = {x:x, y:y, time:time};
+    data = {x:x, y:y, time:time, level:level};
     io.emit('pos_update', data);
 
     if (Number(x.toFixed(9)) === EndX && Number(y.toFixed(9)) === EndY) {

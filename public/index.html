@@ -190,21 +190,88 @@
                 ctx.fillRect(xPos * blockSize, yPos * blockSize, blockSize, blockSize);
             }
 
-            function drawBall(xPos, yPos, color) {
-                const centerX = xPos * blockSize + blockSize / 2;
-                const centerY = yPos * blockSize + blockSize / 2;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, blockSize / 2 - 1, 0, Math.PI * 2);
-                ctx.fillStyle = color;
-                ctx.fill();
-                ctx.closePath();
-            }
-
             function drawTraps() {
                 for (let trap of traps) {
                     const xPos = trap[0];
                     const yPos = trap[1];
                     drawBall(xPos, yPos, 'yellow'); // Replace 'red' with your desired color
+                }
+            }
+
+            function drawBall(xPos, yPos, color) {
+                const centerX = xPos * blockSize + blockSize / 2;
+                const centerY = yPos * blockSize + blockSize / 2;
+                const radius = blockSize / 2 - 2;
+
+                if (color === '#c80000') {
+                    // Draw basketball
+                    const ballColor = '#FF8C00'; // Basketball orange color
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = ballColor;
+                    ctx.fill();
+                    ctx.closePath();
+
+                    // Draw the vertical line
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY - radius);
+                    ctx.lineTo(centerX, centerY + radius);
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.closePath();
+
+                    // Draw the horizontal line
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - radius, centerY);
+                    ctx.lineTo(centerX + radius, centerY);
+                    ctx.stroke();
+                    ctx.closePath();
+
+                    // Draw the left curve
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, Math.PI / 4, (3 * Math.PI) / 4);
+                    ctx.stroke();
+                    ctx.closePath();
+
+                    // Draw the right curve
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, (5 * Math.PI) / 4, (7 * Math.PI) / 4);
+                    ctx.stroke();
+                    ctx.closePath();
+                } else if (color === 'yellow') {
+                    // Draw cobweb
+                    const webColor = '#000000'; // White color for the cobweb
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fill();
+                    ctx.closePath();
+
+                    ctx.strokeStyle = webColor;
+                    ctx.lineWidth = 1;
+
+                    for (let i = 0; i < 8; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(centerX + radius * Math.cos(i * Math.PI / 4), centerY + radius * Math.sin(i * Math.PI / 4));
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+
+                    for (let i = 1; i < 4; i++) {
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, radius * i / 4, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                } else {
+                    // Default ball
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.closePath();
                 }
             }
             
@@ -228,6 +295,9 @@
 
             socket.on('pos_update', (data) => {
                 console.log(`x,y: ${data.x}, ${data.y}`);
+
+                timeleft = Math.round(data.time/1000);
+                editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level;
 
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
                 x = data.x;
