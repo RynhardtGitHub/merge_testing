@@ -49,7 +49,9 @@ io.on('connection', (socket) => {
     playerCount += 1;
     MAX_DATA_POINTS = playerCount;
 
-    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps};
+    let host = (playerCount == 1);
+
+    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps, host:host};
     io.emit('getInitialData', data);
 
     io.emit('start');
@@ -80,7 +82,12 @@ io.on('connection', (socket) => {
 
         MAX_DATA_POINTS = playerCount * 3;
     })
-    
+});
+
+io.on('resetServer', () => {
+    resetServer();
+
+    console.log('Server reset!');
 });
 
 // Run servers
@@ -210,9 +217,6 @@ function update() {
     time-=tickSpeed;
     speedCounter-=tickSpeed;
     if (time < 0){
-        if (singleMessage)
-            alert('You reached level ' + level);
-        singleMessage = false;
         return;
     }
     if (speedCounter<0){
@@ -300,5 +304,6 @@ function resetServer() {
     gridSize = 5;
     lives = 5;
     level = 1;
+    time = 90000;
     startGame();
 }

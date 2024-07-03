@@ -144,6 +144,13 @@
                 EndY = data.EndY;
                 traps = data.traps;
 
+                if (data.host) {
+                    const restartButton = document.getElementById('restartButton');
+                    restartButton.style.display = 'visible';
+
+                    socket.emit('resetServer');
+                }
+
                 console.log(`Data received: ${JSON.stringify(data)}`);
             });
 
