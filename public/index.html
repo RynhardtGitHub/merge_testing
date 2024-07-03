@@ -82,7 +82,6 @@
             const canvasContainer = document.getElementById('canvasContainer');
             const ctx = canvas.getContext('2d');
             const size = Math.min(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
-            const heartsContainer = document.getElementById('hearts');
             
             canvas.width = size;
             canvas.height = size;
@@ -166,16 +165,6 @@
             //     hearts = heartsContainer.getElementsByTagName('img');
             // });
 
-            let hearts = heartsContainer.getElementsByTagName('img');
-
-            socket.on('remove_heart', (lives) => {
-                console.log(`Remove heart triggered`)
-
-                for (let i = 0; i < hearts.length; i++) {
-                    hearts[i].style.display = i < lives ? 'visible' : 'hidden'; 
-                }
-            });
-
             function drawMaze() {
 
                 for (let i = 0; i < vector2D.length; i++) {
@@ -256,22 +245,6 @@
                     alert('not supported');
                 }
             }
-
-            function resetHearts() {
-                let lives = 5;
-                // const heartsContainer = document.getElementById('hearts');
-                heartsContainer.innerHTML = '';
-                for (let i = 0; i < 5; i++) {
-                    const heart = document.createElement('img');
-                    heart.src = 'heart.png';
-                    heart.alt = 'Heart';
-                    heart.width = 30;
-                    heart.height = 30;
-                    heartsContainer.appendChild(heart);
-                }
-                hearts = heartsContainer.getElementsByTagName('img');
-            }
-
             // function removeHeart() {
             //     if (hearts.length > 0) {
             //         hearts[hearts.length - 1].remove();
