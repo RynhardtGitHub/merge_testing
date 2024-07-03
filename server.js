@@ -96,6 +96,7 @@ io.on('connection', (socket) => {
 
     socket.on('resetServer', () => {
         resetServer();
+        start = false;
     
         console.log('Server reset!');
     });
