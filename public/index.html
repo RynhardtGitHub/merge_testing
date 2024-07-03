@@ -171,6 +171,8 @@
             let hearts = heartsContainer.getElementsByTagName('img');
 
             socket.on('remove_heart', (lives) => {
+                console.log(`Remove heart triggered`)
+
                 for (let i = 0; i < hearts.length; i++) {
                     hearts[i].style.display = i < lives ? 'visible' : 'hidden'; 
                 }
