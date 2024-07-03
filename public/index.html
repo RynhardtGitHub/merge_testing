@@ -170,6 +170,9 @@
 
             let hearts = Array.from(heartsContainer.getElementsByTagName('img')); // Convert to array
             socket.on('remove_heart', (lives) => {
+
+                console.log(`Remaining lives: ${lives}`);
+
                 hearts.forEach((heart, index) => {
                     heart.style.display = index < lives ? 'inline' : 'none'; // Show/hide based on lives
                 });
