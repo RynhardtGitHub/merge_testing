@@ -152,6 +152,9 @@
 
                     console.log('This client is host.')
 
+                    const btnPermission = document.getElementById('btnPermission');
+                    btnPermission.style.display = 'none';
+
                     const restartButton = document.getElementById('restartButton');
                     restartButton.style.display = 'block';
 
@@ -164,7 +167,7 @@
                     const defendButton = document.getElementById('defendButton');
                     defendButton.style.display = 'none';
 
-                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.`);
+                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.`);
                 }
 
                 console.log(`Data received: ${JSON.stringify(data)}`);
