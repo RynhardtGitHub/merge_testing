@@ -124,6 +124,7 @@
                 drawBall(x, y, '#c80000');
                 drawBall(EndX, EndY, 'black');
                 drawTraps();
+                drawBoosts();
 
                 console.log(`Start received`);
             });
@@ -169,7 +170,7 @@
                     const defendButton = document.getElementById('defendButton');
                     defendButton.style.display = 'none';
 
-                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.`);
+                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.\n - Blue boosts add 5s.`);
                 }
 
                 // console.log(`Data received: ${JSON.stringify(data)}`);
@@ -214,7 +215,9 @@
                     const yPos = trap[1];
                     drawBall(xPos, yPos, 'yellow'); // Replace 'red' with your desired color
                 }
+            }
 
+            function drawBoosts() {
                 for (let boost of boosts) {
                     const xPos = boost[0];
                     const yPos = boost[1];
@@ -331,6 +334,7 @@
                 x = data.x;
                 y = data.y;
 
+                drawTraps();
                 drawBall(data.x, data.y, '#c80000');
             });
     
