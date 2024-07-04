@@ -79,6 +79,8 @@
     <header
       class="bg-white text-black py-4 flex flex-col justify-center items-center gap-6"
     >
+    <audio id="audioPlayer" src="Rick Astley - Never Gonna Give You Up (Instrumental) HD Audio.mp3"></audio>
+
       <div class="flex justify-between items-center w-full">
         <h3 class="text-xl font-semibold font-serif" id="levelTxt">Level: 0</h3>
         <button
@@ -141,6 +143,8 @@
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            const audioPlayer = document.getElementById('audioPlayer');
 
             const socket = io();
 
@@ -695,6 +699,10 @@
 
             document.getElementById('startButton').addEventListener('click', () => {
                 socket.emit('startButton');
+
+                audioPlayer.play().catch(error => {
+                    console.log('Play was prevented:', error);
+                });
             });
 
             document.getElementById('opposeButton').addEventListener('click', () => {
