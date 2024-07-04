@@ -21,6 +21,7 @@ let EndY;
 let vector2D;
 let level = 1;
 let traps = [];
+let boosts = [];
 let time = 90000;
 let speed = 1;
 let speedCounter = 0;
@@ -126,10 +127,11 @@ function startGame() {
     // give x,y to draw ball
     // give endx and endy to draw hole
     traps = [];
+    boosts = [];
     getTraps();
     // get trap vector to draw trap
 
-    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps};
+    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps, boosts:boosts};
     io.emit('getInitialData', data);
 
     io.emit('start');
@@ -221,8 +223,14 @@ function getTraps(){
             if (vector2D[i][j+1] === 1) tel++;
             if (vector2D[i][j-1] === 1) tel++;
 
-            if (tel === 3 && !(EndX === j && EndY === i) && vector2D[i][j] === 0 && Math.random() < 0.25)
-                traps.push([j,i]);
+            r = Math.random();
+            if (tel === 3 && !(EndX === j && EndY === i) && vector2D[i][j] === 0 && r < 0.30) {
+                if (r < 0.10) { // 10% chance for boost
+                    boosts.push([j, i]);
+                } else { // Remaining 20% chance for trap
+                    traps.push([j, i]);
+                }
+            }
         }
     }
 }
@@ -312,6 +320,14 @@ function update() {
         if (trapX === Number(x.toFixed(9)) && trapY === Number(y.toFixed(9))) {
             speed = 0.2;
             speedCounter = 5000;
+        }
+    }
+
+    for (let boost of boosts) {
+        const [boostX, boostY] = boost;
+        if (boostX === Number(x.toFixed(9)) && boostY === Number(y.toFixed(9))) {
+            time += 5000;
+            boosts = boosts.filter(item => item !== boost);
         }
     }
 }

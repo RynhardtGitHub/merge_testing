@@ -97,6 +97,7 @@
             let blockSize;
             let vector2D;
             let traps = [];
+            let boosts = [];
             let offense = true;
 
             // requestDeviceOrientation();
@@ -147,6 +148,7 @@
                 EndX = data.EndX;
                 EndY = data.EndY;
                 traps = data.traps;
+                boosts = data.boosts;
 
                 if (data.host) {
 
@@ -211,6 +213,12 @@
                     const xPos = trap[0];
                     const yPos = trap[1];
                     drawBall(xPos, yPos, 'yellow'); // Replace 'red' with your desired color
+                }
+
+                for (let boost of boosts) {
+                    const xPos = boost[0];
+                    const yPos = boost[1];
+                    drawBall(xPos, yPos, 'blue'); // Replace 'red' with your desired color
                 }
             }
 
