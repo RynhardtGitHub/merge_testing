@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
     let host = (playerCount == 1);
 
-    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps, host:host};
+    data = {vector2D:vector2D, gridSize:gridSize, x:x, y:y, EndX:EndX, EndY:EndY, traps:traps, host:host, boosts:boosts};
     io.emit('getInitialData', data);
 
     io.emit('start');
