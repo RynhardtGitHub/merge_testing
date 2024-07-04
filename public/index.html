@@ -332,6 +332,10 @@
                 timeleft = Math.round(data.time/1000);
                 editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level;
 
+                if (host && timeleft <= 0) {
+                    alert(`Time's up!`);
+                }
+
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
                 x = data.x;
                 y = data.y;
