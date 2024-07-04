@@ -698,7 +698,8 @@
 
             document.getElementById('restartButton').addEventListener('click', () => {
                 socket.emit('resetServer');
-                rickroll = true;
+                audioPlayer.pause();
+                rickroll = false;
             });
 
             document.getElementById('startButton').addEventListener('click', () => {
