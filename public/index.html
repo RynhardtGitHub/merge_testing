@@ -170,7 +170,7 @@
                     alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.`);
                 }
 
-                console.log(`Data received: ${JSON.stringify(data)}`);
+                // console.log(`Data received: ${JSON.stringify(data)}`);
             });
 
             // socket.on('remove_heart', (lives) => {
@@ -358,6 +358,7 @@
 
             document.getElementById('restartButton').addEventListener('click', () => {
                 socket.emit('resetServer');
+                editableText.innerText = 'Time: -reset-' + '\tLevel: ' + 1;
             });
 
             document.getElementById('startButton').addEventListener('click', () => {
