@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canvas Example</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body, html {
             margin: 0;
@@ -12,7 +13,8 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            background-color: #b9b9b9;
+            /* background-color: #b9b9b9; */
+            background-color: #ffffff;
         }
         header {
             background-color: #b9b9b9;
@@ -40,14 +42,14 @@
             display: flex;
             gap: 10px;
         }
-        .buttons button {
+        /* .buttons button {
             background-color: #c80000; 
             color: white; 
             padding: 10px 20px;
             border-radius: 5px; 
             font-size: 16px;
             cursor: pointer;
-        }
+        } */
         footer {
             background-color: #b9b9b9;
             color: #000;
@@ -57,12 +59,12 @@
     </style>
 </head>
 <body>
-    <header>
+    <header >
         <div id="editableTextContainer">
             <h1 id="editableText">mergetesting-production.up.railway.app</h1>
         </div>
     </header>
-    <div id="canvasContainer">
+    <!-- <div id="canvasContainer">
         <canvas id="canvas"></canvas>
     </div>
     <footer>
@@ -73,7 +75,68 @@
             <button id="opposeButton">Attack!</button>
             <button id="defendButton">Defend!</button>
         </div>
-    </footer>
+    </footer> -->
+    <header
+      class="bg-white text-black py-4 flex flex-col justify-center items-center gap-6"
+    >
+      <div class="flex justify-between items-center w-full">
+        <h3 class="text-xl font-semibold font-serif" id="levelTxt">Level: 0</h3>
+        <button
+          id="btnPermission"
+          class="bg-blue-500 text-xs hover:bg-blue-700 text-white py-2 px-4 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Allow permission
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center justify-center mt-1">
+        <div class="relative w-72 h-6 bg-gray-200 rounded-full overflow-hidden">
+          <div
+            id="progress-bar"
+            class="absolute h-full bg-green-500 transition-width duration-1000 ease-in-out"
+            style="width: 100%"
+          ></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button
+          id="restartButton"
+          style="display: none"
+          class="bg-white border border-gray-200 text-black py-2 px-6 text-xs hover:bg-gray-200 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Restart
+        </button>
+        <!-- <button
+          id="btnPermission"
+          class="bg-blue-500 text-xs hover:bg-blue-700 text-white py-2 px-4 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Allow permission
+        </button> -->
+        <button
+          id="startButton"
+          style="display: none"
+          class="bg-white border border-gray-200 text-black py-2 px-6 text-xs hover:bg-gray-200 py-2 px-4 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Start/Pause
+        </button>
+        <button
+          id="opposeButton"
+          class="bg-white border border-gray-200 text-black py-2 px-6 text-xs hover:bg-gray-200 py-2 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Attack!
+        </button>
+        <button
+          id="defendButton"
+          class="bg-white border border-gray-200 text-black py-2 px-6 bg-blue-600 text-xs hover:bg-gray-200 py-2 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 font-serif"
+        >
+          Defend!
+        </button>
+      </div>
+    </header>
+    <div id="canvasContainer" class="p-4 mb-8">
+        <canvas id="canvas"></canvas>
+    </div>
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script>
@@ -120,9 +183,11 @@
                 // getInitialData();
 
                 blockSize = size/gridSize;
-                drawMaze();            
+                drawMaze();
                 drawBall(x, y, '#c80000');
+                // drawBall(x, y, 'boost');
                 drawBall(EndX, EndY, 'black');
+                // drawBall(EndX, EndY, 'boost');
                 drawTraps();
                 drawBoosts();
 
@@ -221,7 +286,7 @@
                 for (let boost of boosts) {
                     const xPos = boost[0];
                     const yPos = boost[1];
-                    drawBall(xPos, yPos, 'blue'); // Replace 'red' with your desired color
+                    drawBall(xPos, yPos, 'boost'); // Replace 'red' with your desired color
                 }
             }
 
@@ -292,6 +357,40 @@
                         ctx.stroke();
                         ctx.closePath();
                     }
+                } else if (color === 'boost') {
+                    const ballColor = 'orange';
+                    // Create gradient for shading
+                    const gradient = ctx.createRadialGradient(
+                    centerX,
+                    centerY,
+                    radius / 4,
+                    centerX,
+                    centerY,
+                    radius
+                    );
+                    gradient.addColorStop(0, "white"); // Highlight color
+                    gradient.addColorStop(0.5, ballColor); // Main color
+                    gradient.addColorStop(1, "darkorange"); // Shadow color
+
+                    // Draw the ball with gradient
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+                    ctx.closePath();
+
+                    // Add a highlight
+                    ctx.beginPath();
+                    ctx.arc(
+                    centerX - radius / 3,
+                    centerY - radius / 3,
+                    radius / 4,
+                    0,
+                    Math.PI * 2
+                    );
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.5)"; // Highlight color with transparency
+                    ctx.fill();
+                    ctx.closePath();
                 } else {
                     // Default ball
                     ctx.beginPath();
@@ -301,7 +400,199 @@
                     ctx.closePath();
                 }
             }
-            
+     
+            // function drawBall(xPos, yPos, color) {
+            //     const centerX = xPos * blockSize + blockSize / 2;
+            //     const centerY = yPos * blockSize + blockSize / 2;
+            //     const radius = blockSize / 2 - 2;
+
+            //     if (color === "#c80000") {
+            //         // Draw basketball
+            //         /*
+            //         const ballColor = "red"; // Basketball orange color
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         ctx.fillStyle = ballColor;
+            //         ctx.fill();
+            //         ctx.closePath();
+
+            //         */
+            //         // Ball color
+            //         const ballColor = "orange";
+
+            //         // Create gradient for shading
+            //         const gradient = ctx.createRadialGradient(
+            //         centerX,
+            //         centerY,
+            //         radius / 4,
+            //         centerX,
+            //         centerY,
+            //         radius
+            //         );
+            //         gradient.addColorStop(0, "white"); // Highlight color
+            //         gradient.addColorStop(0.5, ballColor); // Main color
+            //         gradient.addColorStop(1, "darkorange"); // Shadow color
+
+            //         // Draw the ball with gradient
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         ctx.fillStyle = gradient;
+            //         ctx.fill();
+            //         ctx.closePath();
+
+            //         // Add a highlight
+            //         ctx.beginPath();
+            //         ctx.arc(
+            //         centerX - radius / 3,
+            //         centerY - radius / 3,
+            //         radius / 4,
+            //         0,
+            //         Math.PI * 2
+            //         );
+            //         ctx.fillStyle = "rgba(255, 255, 255, 0.5)"; // Highlight color with transparency
+            //         ctx.fill();
+            //         ctx.closePath();
+
+            //         // Draw the vertical line
+            //         /*
+            //         ctx.beginPath();
+            //         ctx.moveTo(centerX, centerY - radius);
+            //         ctx.lineTo(centerX, centerY + radius);
+            //         ctx.strokeStyle = "black";
+            //         ctx.lineWidth = 2;
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the horizontal line
+            //         ctx.beginPath();
+            //         ctx.moveTo(centerX - radius, centerY);
+            //         ctx.lineTo(centerX + radius, centerY);
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the left curve
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, Math.PI / 4, (3 * Math.PI) / 4);
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the right curve
+            //         ctx.beginPath();
+            //         ctx.arc(
+            //         centerX,
+            //         centerY,
+            //         radius,
+            //         (5 * Math.PI) / 4,
+            //         (7 * Math.PI) / 4
+            //         );
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         */
+            //     }else if(color="basketball"){
+            //         const ballColor = "yellow"; // Basketball orange color
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         ctx.fillStyle = ballColor;
+            //         ctx.fill();
+            //         ctx.closePath();
+
+            //         // Draw the vertical line
+                    
+            //         ctx.beginPath();
+            //         ctx.moveTo(centerX, centerY - radius);
+            //         ctx.lineTo(centerX, centerY + radius);
+            //         ctx.strokeStyle = "black";
+            //         ctx.lineWidth = 2;
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the horizontal line
+            //         ctx.beginPath();
+            //         ctx.moveTo(centerX - radius, centerY);
+            //         ctx.lineTo(centerX + radius, centerY);
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the left curve
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, Math.PI / 4, (3 * Math.PI) / 4);
+            //         ctx.stroke();
+            //         ctx.closePath();
+
+            //         // Draw the right curve
+            //         ctx.beginPath();
+            //         ctx.arc(
+            //         centerX,
+            //         centerY,
+            //         radius,
+            //         (5 * Math.PI) / 4,
+            //         (7 * Math.PI) / 4
+            //         );
+            //         ctx.stroke();
+            //         ctx.closePath();
+            //     } 
+                
+            //     else if (color === "yellow") {
+            //         // Draw cobweb
+            //         const webColor = "#000000"; // White color for the cobweb
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         ctx.fillStyle = "#FFFFFF";
+            //         ctx.fill();
+            //         ctx.closePath();
+
+            //         ctx.strokeStyle = webColor;
+            //         ctx.lineWidth = 1;
+
+            //         for (let i = 0; i < 8; i++) {
+            //         ctx.beginPath();
+            //         ctx.moveTo(centerX, centerY);
+            //         ctx.lineTo(
+            //             centerX + radius * Math.cos((i * Math.PI) / 4),
+            //             centerY + radius * Math.sin((i * Math.PI) / 4)
+            //         );
+            //         ctx.stroke();
+            //         ctx.closePath();
+            //         }
+
+            //         for (let i = 1; i < 4; i++) {
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, (radius * i) / 4, 0, Math.PI * 2);
+            //         ctx.stroke();
+            //         ctx.closePath();
+            //         }
+            //     } else if (color == 'end') {
+            //         // Default ball
+            //         //ctx.beginPath();
+            //         //ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         //ctx.fillStyle = color;
+            //         //ctx.fill();
+            //         //ctx.closePath();
+
+            //         //i am using default is Hole here
+
+            //         let gradient = ctx.createRadialGradient(
+            //         centerX,
+            //         centerY,
+            //         radius / 4,
+            //         centerX,
+            //         centerY,
+            //         radius
+            //         );
+
+            //         // Define gradient color stops
+            //         gradient.addColorStop(0, "black");
+            //         gradient.addColorStop(1, "gray");
+
+            //         ctx.beginPath();
+            //         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            //         ctx.fillStyle = gradient;
+            //         ctx.fill();
+            //         ctx.closePath();
+            //     }
+            // }
+
             function handleOrientation(event) {
                 let betta = event.beta;
                 let gamma = event.gamma;
@@ -327,21 +618,43 @@
             // }
 
             socket.on('pos_update', (data) => {
+                // console.log(`x,y: ${data.x}, ${data.y}`);
+
+                // timeleft = Math.round(data.time/1000);
+                // editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level;
+
+                // if (timeleft <= 0) {
+                //     alert(`Time's up!`);
+                // }
+
+                // ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
+                // x = data.x;
+                // y = data.y;
+
+                // drawTraps();
+                // drawBall(data.x, data.y, '#c80000');
                 console.log(`x,y: ${data.x}, ${data.y}`);
 
-                timeleft = Math.round(data.time/1000);
-                editableText.innerText = 'Time: ' + timeleft + '\tLevel: ' + data.level;
+                timeleft = Math.round(data.time / 1000);
+                document.getElementById("levelTxt").innerText = `Level ${data.level}`;
 
                 if (timeleft <= 0) {
                     alert(`Time's up!`);
+                }
+
+                const progressBar = document.getElementById("progress-bar");
+                const loadingText = document.getElementById("loading-text");
+                progressBar.style.width = timeleft + "%";
+                if (timeleft <= 30) {
+                    progressBar.style.backgroundColor = "red"; // Change progress bar color to red
                 }
 
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
                 x = data.x;
                 y = data.y;
 
-                drawTraps();
-                drawBall(data.x, data.y, '#c80000');
+                drawBall(data.x, data.y, "#c80000");
+                // drawBall(data.x, data.y, 'basketball');
             });
     
             async function requestDeviceOrientation() {
