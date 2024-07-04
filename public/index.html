@@ -639,7 +639,8 @@
                 document.getElementById("levelTxt").innerText = `Level ${data.level}`;
 
                 if (timeleft <= 0) {
-                    alert(`Time's up!`);
+                    // alert(`Time's up!`);
+                    progressBar.style.backgroundColor = "#4CAF50";
                 }
 
                 const progressBar = document.getElementById("progress-bar");
