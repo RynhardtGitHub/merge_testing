@@ -145,6 +145,7 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             const audioPlayer = document.getElementById('audioPlayer');
+            let rickroll = true;
 
             const socket = io();
 
@@ -642,16 +643,18 @@
                 timeleft = Math.round(data.time / 1000);
                 document.getElementById("levelTxt").innerText = `Level ${data.level}`;
 
-                if (timeleft <= 0) {
+                // if (timeleft <= 0) {
                     // alert(`Time's up!`);
-                    progressBar.style.backgroundColor = "#4CAF50";
-                }
+                    
+                // }
 
                 const progressBar = document.getElementById("progress-bar");
                 const loadingText = document.getElementById("loading-text");
                 progressBar.style.width = timeleft + "%";
                 if (timeleft <= 30) {
                     progressBar.style.backgroundColor = "red"; // Change progress bar color to red
+                } else {
+                    progressBar.style.backgroundColor = "#4CAF50";
                 }
 
                 ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
@@ -700,9 +703,15 @@
             document.getElementById('startButton').addEventListener('click', () => {
                 socket.emit('startButton');
 
-                audioPlayer.play().catch(error => {
-                    console.log('Play was prevented:', error);
-                });
+                if (rickroll) {
+                    audioPlayer.play().catch(error => {
+                        console.log('Play was prevented:', error);
+                    });
+                } else {
+                    audioPlayer.pause();
+                }
+
+                rickroll = false;
             });
 
             document.getElementById('opposeButton').addEventListener('click', () => {
