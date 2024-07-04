@@ -240,7 +240,7 @@
                     const defendButton = document.getElementById('defendButton');
                     defendButton.style.display = 'none';
 
-                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.\n - Blue boosts add 5s.`);
+                    alert(`Choose 'Attack!' or 'Defend!' \n - Attackers aim for the hole.\n - Defenders sabotage them.\n - Webs slow you down for 5 seconds.\n - Gold boosts add 5s.`);
                 }
 
                 // console.log(`Data received: ${JSON.stringify(data)}`);
@@ -699,7 +699,7 @@
             document.getElementById('restartButton').addEventListener('click', () => {
                 socket.emit('resetServer');
                 audioPlayer.pause();
-                rickroll = false;
+                rickroll = true;
             });
 
             document.getElementById('startButton').addEventListener('click', () => {
