@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
         return;
     }
 
-    MAX_DATA_POINTS = playerCount * 3;
+    MAX_DATA_POINTS = playerCount * 4;
 
     let host = (playerCount == 1);
 
@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
             resetServer();
         }
 
-        MAX_DATA_POINTS = playerCount * 3;
+        MAX_DATA_POINTS = playerCount * 4;
     })
 
     socket.on('resetServer', () => {
