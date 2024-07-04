@@ -690,7 +690,6 @@
 
             document.getElementById('restartButton').addEventListener('click', () => {
                 socket.emit('resetServer');
-                editableText.innerText = 'Time: -reset-' + '\tLevel: ' + 1;
             });
 
             document.getElementById('startButton').addEventListener('click', () => {
